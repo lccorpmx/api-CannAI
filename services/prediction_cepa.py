@@ -82,6 +82,8 @@ class PrediccionCepaService:
         self.knn_model_cepas = KNeighborsClassifier(n_neighbors=k)
         self.knn_model_cepas.fit(self.X_train_cepa, self.Y_train_cepa)
         
+
+        
     def make_prediccion_cepa(self, preferencias_usuario_cepa, prediccionPerfil):
         self.perfil=prediccionPerfil
         self.cargar_dataset()
@@ -180,13 +182,16 @@ class PrediccionCepaService:
             "helps_hiv_aids": efectos_cepa.get("helps_hiv_aids", 0),
             "helps_tinnitus": efectos_cepa.get("helps_tinnitus", 0)
         }
-       #refactorizar!
-        threshold =sum(preferencias_usuario)
-        threshold=threshold/100
-        diferencia = [max((a * b, 0))/100 for a, b in zip(preferencias_usuario, efectos_cepa_ordenados.values())]
-        error = [1 if elemento != 0 else 0 for elemento in diferencia]
-        error = sum(error)
-        porcentajeAproximacion = (error*100)/threshold
-
         
-        return cepa_predicha, efectos_cepa, porcentajeAproximacion,  self.perfil
+        def calcular_porcentaje_aproximacion(preferencias_usuario, efectos_cepa_ordenados):
+            threshold =sum(preferencias_usuario)
+            threshold=threshold/100
+            diferencia = [max((a * b, 0))/100 for a, b in zip(preferencias_usuario, efectos_cepa_ordenados.values())]
+            error = [1 if elemento != 0 else 0 for elemento in diferencia]
+            error = sum(error)
+            porcentajeAproximacion = (error*100)/threshold
+            return porcentajeAproximacion
+
+        porcentaje_aproximacion = calcular_porcentaje_aproximacion(preferencias_usuario, efectos_cepa_ordenados)
+
+        return cepa_predicha, efectos_cepa, porcentaje_aproximacion,  self.perfil
