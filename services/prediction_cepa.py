@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+import time
 
 class PrediccionPerfilService:
     def __init__(self):
@@ -131,9 +132,11 @@ class PrediccionCepaService:
                                 preferencias_usuario_cepa.helps_alzheimer_s,
                                 preferencias_usuario_cepa.helps_hiv_aids,
                                 preferencias_usuario_cepa.helps_tinnitus]
-
+        start_time = time.time()
         # Hacer la predicción
         cepa_predicha = self.knn_model_cepas.predict([preferencias_usuario])[0]
+        predicciontiempo = time.time() - start_time
+        print(predicciontiempo)
         
         # Obtener los efectos de la cepa predicha
         efectos_cepa = self.dataset[self.dataset['name'] == cepa_predicha].iloc[:, 1:].to_dict(orient='records')[0]

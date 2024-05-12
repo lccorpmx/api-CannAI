@@ -89,9 +89,9 @@ async def prediccionCepa(preferencias_usuario_perfil: PreferenciasUsuario_Perfil
         prediccionCepa_primeraPosicionPerfil = servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, perfilesRestantes[0])
         segundaCepa_primeraPosicionPerfil = servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, perfilesRestantes[1])
         
-        if prediccionCepa_primeraPosicionPerfil[2] < 85:
+        if prediccionCepa_primeraPosicionPerfil[2] > 85:
             return {"mensaje": "Busqueda Alterna", "prediccion": prediccionCepa_primeraPosicionPerfil}
-        elif segundaCepa_primeraPosicionPerfil[2] < 85:
+        elif segundaCepa_primeraPosicionPerfil[2] > 85:
             return {"mensaje": "Busqueda Alterna", "prediccion": segundaCepa_primeraPosicionPerfil}
         else:
             return {"mensaje": "Se encontraron pocas coincidencias, estos fueron los resultados", "prediccion1": prediccionCepa_primeraPosicionPerfil, "prediccion2": segundaCepa_primeraPosicionPerfil}
