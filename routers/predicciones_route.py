@@ -3,7 +3,9 @@ from pydantic import BaseModel
 from services.prediction_cepa import PrediccionPerfilService
 from services.prediction_cepa import PrediccionCepaService
 
+
 router = APIRouter()
+
 
 servicio_PrediccionPerfil = PrediccionPerfilService()
 servicio_PrediccionCepa = PrediccionCepaService()
@@ -72,26 +74,18 @@ class PreferenciasUsuario_Cepa(BaseModel):
 async def prediccionCepa(preferencias_usuario_perfil: PreferenciasUsuario_Perfil, preferencias_usuario_cepa: PreferenciasUsuario_Cepa):
     prediccionPerfil = servicio_PrediccionPerfil.make_prediccion_perfil(preferencias_usuario_perfil)
     prediccionCepa = servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, prediccionPerfil)
+    cepas=[]
     if prediccionCepa[2] == 100:
-        return {"Busqueda Perfecta":prediccionCepa}
-    elif prediccionCepa[2] > 85:
-        return {"Busqueda Casi Perfecta": prediccionCepa}
-    elif prediccionCepa[2] > 70:
-        return {"Busqueda Acertada": prediccionCepa}
-    else:
-        
-        perfilesRestantes=[0,1,2]
+        cepas.append(prediccionCepa)
+        return {"mensaje": "Prediccion Perfecta", "Cepa":cepas}
+    elif prediccionCepa[2] < 100:
+        perfilesRestantes = [0, 1, 2]
         if prediccionPerfil in perfilesRestantes:
             perfilesRestantes.remove(prediccionPerfil)
         else:
-            print("No se encontro el perfil")
-            
-        prediccionCepa_primeraPosicionPerfil = servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, perfilesRestantes[0])
-        segundaCepa_primeraPosicionPerfil = servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, perfilesRestantes[1])
+            print("No se encontró el perfil")
         
-        if prediccionCepa_primeraPosicionPerfil[2] > 85:
-            return {"mensaje": "Busqueda Alterna", "prediccion": prediccionCepa_primeraPosicionPerfil}
-        elif segundaCepa_primeraPosicionPerfil[2] > 85:
-            return {"mensaje": "Busqueda Alterna", "prediccion": segundaCepa_primeraPosicionPerfil}
-        else:
-            return {"mensaje": "Se encontraron pocas coincidencias, estos fueron los resultados", "prediccion1": prediccionCepa_primeraPosicionPerfil, "prediccion2": segundaCepa_primeraPosicionPerfil}
+        cepas.append(servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, perfilesRestantes[0]))
+        cepas.append(servicio_PrediccionCepa.make_prediccion_cepa(preferencias_usuario_cepa, perfilesRestantes[1]))
+    
+        return {"mensaje": "Prediccion Secundaria", "Cepa":cepas}

@@ -139,7 +139,7 @@ class PrediccionCepaService:
         print(predicciontiempo)
         
         # Obtener los efectos de la cepa predicha
-        efectos_cepa = self.dataset[self.dataset['name'] == cepa_predicha].iloc[:, 1:].to_dict(orient='records')[0]
+        efectos_cepa = self.dataset[self.dataset['name'] == cepa_predicha].iloc[:, 1:-1].to_dict(orient='records')[0]
 
 
         efectos_cepa_ordenados = {

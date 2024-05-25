@@ -1,0 +1,6 @@
+projectKey=cannai_api
+serverUrl=http://localhost:9000
+serverVersion=10.5.1.90531
+dashboardUrl=http://localhost:9000/dashboard?id=cannai_api
+ceTaskId=574d2ff0-c141-48a9-9b71-16e9a70b5483
+ceTaskUrl=http://localhost:9000/api/ce/task?id=574d2ff0-c141-48a9-9b71-16e9a70b5483
